@@ -164,6 +164,8 @@ KbdRptParser Prs;
 
 void setup()
 {
+	pinMode(LEDPIN, OUTPUT);
+
 	Serial.begin(115200);
 	while(!Serial)
 		;
