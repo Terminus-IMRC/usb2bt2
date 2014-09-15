@@ -19,6 +19,22 @@ void bridge_serial();
 
 void update_bt()
 {
+	Serial.print("updat_bt: spbits: 0x");
+	Serial.println(spbits, HEX);
+	Serial.print("update_bt: nmbits: ");
+	Serial.print(nmbits[0]);
+	Serial.print(" ");
+	Serial.print(nmbits[1]);
+	Serial.print(" ");
+	Serial.print(nmbits[2]);
+	Serial.print(" ");
+	Serial.print(nmbits[3]);
+	Serial.print(" ");
+	Serial.print(nmbits[4]);
+	Serial.print(" ");
+	Serial.print(nmbits[5]);
+	Serial.println("");
+
 	mySerial.print(0xfd);
 	mySerial.print(0x09);
 	mySerial.print(0x01);
