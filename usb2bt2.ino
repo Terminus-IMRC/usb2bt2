@@ -35,17 +35,17 @@ void update_bt()
 	Serial.print(nmbits[5]);
 	Serial.println("");
 
-	mySerial.print(0xfd);
-	mySerial.print(0x09);
-	mySerial.print(0x01);
-	mySerial.print(spbits);
-	mySerial.print(0x00);
-	mySerial.print(nmbits[0]);
-	mySerial.print(nmbits[1]);
-	mySerial.print(nmbits[2]);
-	mySerial.print(nmbits[3]);
-	mySerial.print(nmbits[4]);
-	mySerial.print(nmbits[5]);
+	mySerial.print((char)0xfd);
+	mySerial.print((char)0x09);
+	mySerial.print((char)0x01);
+	mySerial.print((char)spbits);
+	mySerial.print((char)0x00);
+	mySerial.print((char)nmbits[0]);
+	mySerial.print((char)nmbits[1]);
+	mySerial.print((char)nmbits[2]);
+	mySerial.print((char)nmbits[3]);
+	mySerial.print((char)nmbits[4]);
+	mySerial.print((char)nmbits[5]);
 }
 
 class KbdRptParser : public KeyboardReportParser
