@@ -11,8 +11,8 @@
 SoftwareSerial mySerial(RXPIN, TXPIN);
 
 uint8_t spbits=0;
-uint8_t nmbits[6]={0};
-uint8_t nmbits_elem=0;
+uint8_t nmkeys[6]={0};
+uint8_t nmkeys_elem=0;
 
 void panic();
 void bridge_serial();
@@ -21,18 +21,18 @@ void update_bt()
 {
 	Serial.print("updat_bt: spbits: 0x");
 	Serial.println(spbits, HEX);
-	Serial.print("update_bt: nmbits: ");
-	Serial.print(nmbits[0]);
+	Serial.print("update_bt: nmkeys: ");
+	Serial.print(nmkeys[0]);
 	Serial.print(" ");
-	Serial.print(nmbits[1]);
+	Serial.print(nmkeys[1]);
 	Serial.print(" ");
-	Serial.print(nmbits[2]);
+	Serial.print(nmkeys[2]);
 	Serial.print(" ");
-	Serial.print(nmbits[3]);
+	Serial.print(nmkeys[3]);
 	Serial.print(" ");
-	Serial.print(nmbits[4]);
+	Serial.print(nmkeys[4]);
 	Serial.print(" ");
-	Serial.print(nmbits[5]);
+	Serial.print(nmkeys[5]);
 	Serial.println("");
 
 	mySerial.print((char)0xfd);
@@ -40,12 +40,12 @@ void update_bt()
 	mySerial.print((char)0x01);
 	mySerial.print((char)spbits);
 	mySerial.print((char)0x00);
-	mySerial.print((char)nmbits[0]);
-	mySerial.print((char)nmbits[1]);
-	mySerial.print((char)nmbits[2]);
-	mySerial.print((char)nmbits[3]);
-	mySerial.print((char)nmbits[4]);
-	mySerial.print((char)nmbits[5]);
+	mySerial.print((char)nmkeys[0]);
+	mySerial.print((char)nmkeys[1]);
+	mySerial.print((char)nmkeys[2]);
+	mySerial.print((char)nmkeys[3]);
+	mySerial.print((char)nmkeys[4]);
+	mySerial.print((char)nmkeys[5]);
 }
 
 class KbdRptParser : public KeyboardReportParser
@@ -92,10 +92,10 @@ void KbdRptParser::OnKeyDown(uint8_t mod, uint8_t key)
 	Serial.print("DN ");
 	PrintKey(mod, key);
 
-	if(nmbits_elem==5)
+	if(nmkeys_elem==5)
 		Serial.println("warning: more than 6 keys are pushed at the same time; ignoring the last key");
 	else
-		nmbits[nmbits_elem++]=key;
+		nmkeys[nmkeys_elem++]=key;
 
 	update_bt();
 }
@@ -108,13 +108,13 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 	PrintKey(mod, key);
 
 	j=0;
-	for(i=0; i<=nmbits_elem; i++)
-		if(nmbits[i]!=key)
-			nmbits[j++]=nmbits[i];
+	for(i=0; i<=nmkeys_elem; i++)
+		if(nmkeys[i]!=key)
+			nmkeys[j++]=nmkeys[i];
 	if(i==j)
 		Serial.println("warning: unpushed key is released");
 	else
-		nmbits[nmbits_elem--]=0;
+		nmkeys[nmkeys_elem--]=0;
 
 	update_bt();
 }
