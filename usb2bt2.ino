@@ -158,7 +158,10 @@ void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
 }
 
 USB Usb;
-USBHub Hub(&Usb);
+USBHub Hub1(&Usb);
+USBHub Hub2(&Usb);
+USBHub Hub3(&Usb);
+USBHub Hub4(&Usb);
 HIDBoot<HID_PROTOCOL_KEYBOARD> HidKeyboard(&Usb);
 KbdRptParser Prs;
 
