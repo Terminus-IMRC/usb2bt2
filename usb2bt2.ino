@@ -1,3 +1,5 @@
+//#define SDEBUG
+
 #include <hidboot.h>
 #include <usbhub.h>
 #include <stdint.h>
@@ -19,6 +21,7 @@ void bridge_serial();
 
 void update_bt()
 {
+#ifdef SDEBUG
 	Serial.print("updat_bt: spbits: 0x");
 	Serial.println(spbits, HEX);
 	Serial.print("update_bt: nmkeys: ");
@@ -34,6 +37,7 @@ void update_bt()
 	Serial.print(" ");
 	Serial.print(nmkeys[5]);
 	Serial.println("");
+#endif /* SDEBUG */
 
 	mySerial.print((char)0xfd);
 	mySerial.print((char)0x09);
@@ -89,8 +93,10 @@ void KbdRptParser::PrintKey(uint8_t m, uint8_t key)
 
 void KbdRptParser::OnKeyDown(uint8_t mod, uint8_t key)
 {
+#ifdef SDEBUG
 	Serial.print("DN ");
 	PrintKey(mod, key);
+#endif /* SDEBUG */
 
 	if(nmkeys_elem==5)
 		Serial.println("warning: more than 6 keys are pushed at the same time; ignoring the last key");
@@ -104,8 +110,10 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 {
 	int i, j;
 
+#ifdef SDEBUG
 	Serial.print("UP ");
 	PrintKey(mod, key);
+#endif /* SDEBUG */
 
 	j=0;
 	for(i=0; i<=nmkeys_elem; i++)
@@ -126,6 +134,7 @@ void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
 	*((uint8_t*)&beforeMod)=before;
 	*((uint8_t*)&afterMod)=after;
 
+#ifdef SDEBUG
 	if(beforeMod.bmLeftCtrl!=afterMod.bmLeftCtrl)
 		Serial.println("LeftCtrl changed");
 	if(beforeMod.bmLeftShift!=afterMod.bmLeftShift)
@@ -143,6 +152,7 @@ void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
 		Serial.println("RightAlt changed");
 	if(beforeMod.bmRightGUI!=afterMod.bmRightGUI)
 		Serial.println("RightGUI changed");
+#endif /* SDEBUG */
 
 	spbits=	\
 		 (afterMod.bmLeftCtrl?  1<<0:0)	\
@@ -178,12 +188,16 @@ void setup()
 		Serial.println("error: OSC did not start");
 		panic();
 	}
+#ifdef SDEBUG
 	Serial.println("Usb started");
+#endif /* SDEBUG */
 	delay(200);
 
 	HidKeyboard.SetReportParser(0, (HIDReportParser*)&Prs);
 
+#ifdef SDEBUG
 	Serial.println("End of setup()");
+#endif /* SDEBUG */
 }
 
 void loop()
