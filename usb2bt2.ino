@@ -24,6 +24,8 @@ void update_bt()
 #ifdef SDEBUG
 	Serial.print("updat_bt: spbits: 0x");
 	Serial.println(spbits, HEX);
+	Serial.print("update_bt: nmkeys_elem: ");
+	Serial.println(nmkeys_elem);
 	Serial.print("update_bt: nmkeys: ");
 	Serial.print(nmkeys[0]);
 	Serial.print(" ");
