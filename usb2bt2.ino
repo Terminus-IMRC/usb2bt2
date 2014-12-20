@@ -100,6 +100,9 @@ void KbdRptParser::OnKeyDown(uint8_t mod, uint8_t key)
 	PrintKey(mod, key);
 #endif /* SDEBUG */
 
+	if(key==0)
+		return;
+
 	if(nmkeys_elem>5)
 		Serial.println("warning: more than 6 keys are pushed at the same time; ignoring the last key");
 	else
@@ -116,6 +119,9 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 	Serial.print("UP ");
 	PrintKey(mod, key);
 #endif /* SDEBUG */
+
+	if(key==0)
+		return;
 
 	j=0;
 	for(i=0; i<=nmkeys_elem; i++)
