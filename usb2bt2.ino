@@ -106,7 +106,11 @@ void KbdRptParser::OnKeyDown(uint8_t mod, uint8_t key)
 		return;
 
 	if(nmkeys_elem>5)
+#ifdef SDEBUG
 		Serial.println("warning: more than 6 keys are pushed at the same time; ignoring the last key");
+#else /* SDEBUG */
+		;
+#endif /* SDEBUG */
 	else
 		nmkeys[nmkeys_elem++]=key;
 
@@ -130,7 +134,11 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 		if(nmkeys[i]!=key)
 			nmkeys[j++]=nmkeys[i];
 	if(i==j)
+#ifdef SDEBUG
 		Serial.println("warning: unpushed key is released");
+#else /* SDEBUG */
+		;
+#endif /* SDEBUG */
 	else
 		nmkeys[nmkeys_elem--]=0;
 
@@ -189,13 +197,17 @@ void setup()
 {
 	pinMode(LEDPIN, OUTPUT);
 
+#ifdef SDEBUG
 	Serial.begin(115200);
 	while(!Serial)
 		;
+#endif /* SDEBUG */
 	mySerial.begin(2400);
 
 	if(Usb.Init()==-1){
+#ifdef SDEBUG
 		Serial.println("error: OSC did not start");
+#endif /* SDEBUG */
 		panic();
 	}
 #ifdef SDEBUG
