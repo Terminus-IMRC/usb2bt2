@@ -19,6 +19,8 @@ uint8_t nmkeys_elem=0;
 void panic();
 void bridge_serial();
 
+#define sat_nmkeys_elem(ne) (ne>5?5:ne)
+
 void update_bt()
 {
 #ifdef SDEBUG
@@ -124,7 +126,7 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 		return;
 
 	j=0;
-	for(i=0; i<=nmkeys_elem; i++)
+	for(i=0; i<=sat_nmkeys_elem(nmkeys_elem); i++)
 		if(nmkeys[i]!=key)
 			nmkeys[j++]=nmkeys[i];
 	if(i==j)
