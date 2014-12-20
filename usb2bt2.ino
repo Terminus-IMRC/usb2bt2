@@ -19,7 +19,7 @@ uint8_t nmkeys_elem=0;
 void panic();
 void bridge_serial();
 
-#define sat_nmkeys_elem(ne) (ne>5?5:ne)
+#define sat_nmkeys_elem(ne) (ne>6?6:ne)
 
 void update_bt()
 {
