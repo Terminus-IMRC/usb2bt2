@@ -14,20 +14,18 @@ SoftwareSerial mySerial(RXPIN, TXPIN);
 
 uint8_t spbits=0;
 uint8_t nmkeys[6]={0};
-uint8_t nmkeys_elem=0;
+uint8_t nnmkeys=0;
 
 void panic();
 void bridge_serial();
-
-#define sat_nmkeys_elem(ne) (ne>6?6:ne)
 
 void update_bt()
 {
 #ifdef SDEBUG
 	Serial.print("updat_bt: spbits: 0x");
 	Serial.println(spbits, HEX);
-	Serial.print("update_bt: nmkeys_elem: ");
-	Serial.println(nmkeys_elem);
+	Serial.print("update_bt: nnmkeys: ");
+	Serial.println(nnmkeys);
 	Serial.print("update_bt: nmkeys: ");
 	Serial.print(nmkeys[0]);
 	Serial.print(" ");
@@ -105,22 +103,15 @@ void KbdRptParser::OnKeyDown(uint8_t mod, uint8_t key)
 	if(key==0)
 		return;
 
-	if(nmkeys_elem>5)
-#ifdef SDEBUG
-		Serial.println("warning: more than 6 keys are pushed at the same time; ignoring the last key");
-#else /* SDEBUG */
-		;
-#endif /* SDEBUG */
-	else
-		nmkeys[nmkeys_elem++]=key;
+	while(nnmkeys>0)
+		nmkeys[--nnmkeys]=0;
+	nmkeys[nnmkeys++]=key;
 
 	update_bt();
 }
 
 void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 {
-	int i, j;
-
 #ifdef SDEBUG
 	Serial.print("UP ");
 	PrintKey(mod, key);
@@ -129,18 +120,8 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 	if(key==0)
 		return;
 
-	j=0;
-	for(i=0; i<=sat_nmkeys_elem(nmkeys_elem); i++)
-		if(nmkeys[i]!=key)
-			nmkeys[j++]=nmkeys[i];
-	if(i==j)
-#ifdef SDEBUG
-		Serial.println("warning: unpushed key is released");
-#else /* SDEBUG */
-		;
-#endif /* SDEBUG */
-	else
-		nmkeys[nmkeys_elem--]=0;
+	while(nnmkeys>0)
+		nmkeys[--nnmkeys]=0;
 
 	update_bt();
 }
