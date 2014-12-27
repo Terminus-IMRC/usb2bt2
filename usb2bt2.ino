@@ -4,6 +4,7 @@
 #include <usbhub.h>
 #include <stdint.h>
 #include <SoftwareSerial.h>
+#include "keymap_table.h"
 
 #define LEDPIN 13
 
@@ -52,6 +53,34 @@ void update_bt()
 	mySerial.print((char)nmkeys[3]);
 	mySerial.print((char)nmkeys[4]);
 	mySerial.print((char)nmkeys[5]);
+}
+
+void update_bt_with_key_mapping()
+{
+	int e, i;
+	uint8_t spbits_local, spbits_orig=spbits;
+
+	if(nmkeys[0]==0){
+		update_bt();
+		return;
+	}
+
+	spbits_local=(spbits>>4)|(spbits&0x0f);
+
+	e=(nmkeys[0]+spbits_local)%KEYMAP_HASH_MAX;
+	
+	for(i=0; i<KEYMAP_NELEMENTS; i++){
+		if((read_keymap_table(e, i, 0)==nmkeys[0])&&(read_keymap_table(e, i, 1)==spbits_local)){
+			nmkeys[0]=read_keymap_table(e, i, 2);
+			spbits=read_keymap_table(e, i, 3);
+			break;
+		}
+	}
+
+	update_bt();
+	spbits=spbits_orig;
+
+	return;
 }
 
 class KbdRptParser : public KeyboardReportParser
@@ -107,7 +136,7 @@ void KbdRptParser::OnKeyDown(uint8_t mod, uint8_t key)
 		nmkeys[--nnmkeys]=0;
 	nmkeys[nnmkeys++]=key;
 
-	update_bt();
+	update_bt_with_key_mapping();
 }
 
 void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
@@ -123,7 +152,7 @@ void KbdRptParser::OnKeyUp(uint8_t mod, uint8_t key)
 	while(nnmkeys>0)
 		nmkeys[--nnmkeys]=0;
 
-	update_bt();
+	update_bt_with_key_mapping();
 }
 
 void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
@@ -163,7 +192,7 @@ void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
 		|(afterMod.bmRightAlt?  1<<6:0)	\
 		|(afterMod.bmRightGUI?  1<<7:0);
 
-	update_bt();
+	update_bt_with_key_mapping();
 }
 
 USB Usb;
