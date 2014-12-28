@@ -235,6 +235,9 @@ void setup()
 void loop()
 {
 	Usb.Task();
+#ifdef SDEBUG
+	bridge_serial();
+#endif /* SDEBUG */
 }
 
 void panic()
