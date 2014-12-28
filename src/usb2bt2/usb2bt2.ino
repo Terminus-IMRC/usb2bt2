@@ -59,6 +59,7 @@ void update_bt_with_key_mapping()
 {
 	int e, i;
 	uint8_t spbits_local, spbits_orig=spbits;
+	uint8_t nmkeys0_orig=nmkeys[0];
 
 	if(nmkeys[0]==0){
 		update_bt();
@@ -79,6 +80,7 @@ void update_bt_with_key_mapping()
 
 	update_bt();
 	spbits=spbits_orig;
+	nmkeys[0]=nmkeys0_orig;
 
 	return;
 }
