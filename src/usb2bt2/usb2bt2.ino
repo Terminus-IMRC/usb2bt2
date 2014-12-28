@@ -59,7 +59,7 @@ void update_bt_with_key_mapping()
 {
 	int e, i;
 	uint8_t spbits_local, spbits_orig=spbits;
-	uint8_t nmkeys0_orig=nmkeys[0];
+	uint8_t nmkeys0_orig;
 
 	if(nmkeys[0]==0){
 		update_bt();
@@ -67,6 +67,7 @@ void update_bt_with_key_mapping()
 	}
 
 	spbits_local=(spbits>>4)|(spbits&0x0f);
+	nmkeys0_orig=nmkeys[0];
 
 	e=(nmkeys[0]+spbits_local)%KEYMAP_HASH_MAX;
 	
