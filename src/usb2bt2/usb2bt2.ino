@@ -1,4 +1,4 @@
-//#define SDEBUG
+#define SDEBUG
 
 #include <hidboot.h>
 #include <usbhub.h>
