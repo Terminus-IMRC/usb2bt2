@@ -55,6 +55,15 @@ void update_bt()
 	mySerial.print((char)nmkeys[5]);
 }
 
+void update_consumer()
+{
+	mySerial.print((char)0xfd);
+	mySerial.print((char)0x03);
+	mySerial.print((char)0x03);
+	mySerial.print((char)nmkeys[0]);
+	mySerial.print((char)nmkeys[1]);
+}
+
 void update_bt_with_key_mapping()
 {
 	int e, i;
