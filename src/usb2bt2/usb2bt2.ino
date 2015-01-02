@@ -17,6 +17,7 @@ SoftwareSerial mySerial(RXPIN, TXPIN);
 uint8_t spbits=SPBITS_NONE;
 uint8_t nmkeys[6]={0};
 uint8_t nnmkeys=0;
+uint8_t cskeys1=0;
 
 void panic();
 void bridge_serial();
@@ -62,7 +63,7 @@ void update_consumer()
 	mySerial.print((char)0x03);
 	mySerial.print((char)0x03);
 	mySerial.print((char)nmkeys[0]);
-	mySerial.print((char)nmkeys[1]);
+	mySerial.print((char)cskeys1);
 }
 
 void update_bt_with_key_mapping()
@@ -70,8 +71,10 @@ void update_bt_with_key_mapping()
 	int e, i;
 	uint8_t spbits_local, spbits_orig;
 	uint8_t nmkeys0_orig;
+	uint8_t is_consumer=0;
 
 	if(nmkeys[0]==0){
+		update_consumer();
 		update_bt();
 		return;
 	}
@@ -83,16 +86,27 @@ void update_bt_with_key_mapping()
 	e=(nmkeys[0]+spbits_local)%KEYMAP_HASH_MAX;
 	
 	for(i=0; i<KEYMAP_NELEMENTS; i++){
-		if((read_keymap_table(e, i, 0)==nmkeys[0])&&(read_keymap_table(e, i, 1)==spbits_local)){
+		uint8_t v;
+
+		if((read_keymap_table(e, i, 0)==nmkeys[0])&&(((v=read_keymap_table(e, i, 1))&SPBITS_MODIFIER_MASK)==spbits_local)){
 			nmkeys[0]=read_keymap_table(e, i, 2);
+			if((v&SPBITS_REPORT_MASK)==SPBITS_REPORT_CONSUMER)
+				is_consumer=!0;
+			else
+				is_consumer=0;
 			spbits=read_keymap_table(e, i, 3);
 			break;
 		}
 	}
 
-	update_bt();
+	if(is_consumer){
+		cskeys1=spbits;
+		update_consumer();
+	}else
+		update_bt();
 	spbits=spbits_orig;
 	nmkeys[0]=nmkeys0_orig;
+	cskeys1=0;
 
 	return;
 }
