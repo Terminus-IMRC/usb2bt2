@@ -4,6 +4,7 @@
 #include <usbhub.h>
 #include <stdint.h>
 #include <SoftwareSerial.h>
+#include "spbits.h"
 #include "keymap_table.h"
 
 #define LEDPIN 13
@@ -13,7 +14,7 @@
 
 SoftwareSerial mySerial(RXPIN, TXPIN);
 
-uint8_t spbits=0;
+uint8_t spbits=SPBITS_NONE;
 uint8_t nmkeys[6]={0};
 uint8_t nnmkeys=0;
 
@@ -196,14 +197,14 @@ void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
 #endif /* SDEBUG */
 
 	spbits=	\
-		 (afterMod.bmLeftCtrl?  1<<0:0)	\
-		|(afterMod.bmLeftShift? 1<<1:0)	\
-		|(afterMod.bmLeftAlt?   1<<2:0)	\
-		|(afterMod.bmLeftGUI?   1<<3:0)	\
-		|(afterMod.bmRightCtrl? 1<<4:0)	\
-		|(afterMod.bmRightShift?1<<5:0)	\
-		|(afterMod.bmRightAlt?  1<<6:0)	\
-		|(afterMod.bmRightGUI?  1<<7:0);
+		 (afterMod.bmLeftCtrl?  SPBITS_LCTRL:0)	\
+		|(afterMod.bmLeftShift? SPBITS_LSHIFT:0)	\
+		|(afterMod.bmLeftAlt?   SPBITS_LSHIFT:0)	\
+		|(afterMod.bmLeftGUI?   SPBITS_LGUI:0)	\
+		|(afterMod.bmRightCtrl? SPBITS_RCTRL:0)	\
+		|(afterMod.bmRightShift?SPBITS_RSHIFT:0)	\
+		|(afterMod.bmRightAlt?  SPBITS_RALT:0)	\
+		|(afterMod.bmRightGUI?  SPBITS_RGUI:0);
 
 	update_bt_with_key_mapping();
 }
