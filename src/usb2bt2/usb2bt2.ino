@@ -220,7 +220,8 @@ void KbdRptParser::OnControlKeysChanged(uint8_t before, uint8_t after)
 		|(afterMod.bmRightAlt?  SPBITS_RALT:0)	\
 		|(afterMod.bmRightGUI?  SPBITS_RGUI:0);
 
-	update_bt_with_key_mapping();
+	if(nmkeys[0]==0)
+		update_bt_with_key_mapping();
 }
 
 USB Usb;
